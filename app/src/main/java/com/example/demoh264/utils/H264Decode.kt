@@ -4,21 +4,21 @@ import android.media.MediaCodec
 import android.media.MediaFormat
 import android.util.Log
 import android.view.Surface
+import java.io.File
 import java.io.FileInputStream
 import java.lang.Exception
 import kotlin.math.pow
 
-class H264Decode(val path: String, val width: Int, val height: Int, val surface: Surface) :
+class H264Decode(val mediaBytes: ByteArray, val width: Int, val height: Int, val surface: Surface) :
 	Thread() {
 
 
 	private val TAG = javaClass.name
-	var mediaBytes: ByteArray? = null
+
 	var mediaCodec = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC)
 
 	init {
 		//demo测试，一次性读取数据到内存
-		mediaBytes = FileInputStream(path).readBytes()
 		val mediaFromat =
 			MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, width, height)
 		mediaFromat.setInteger(MediaFormat.KEY_FRAME_RATE, 15)

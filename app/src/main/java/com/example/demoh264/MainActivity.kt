@@ -1,11 +1,15 @@
 package com.example.demoh264
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
+import android.media.projection.MediaProjectionManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,11 +21,15 @@ import android.view.SurfaceHolder.Callback
 import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityOptionsCompat
 import com.example.demoh264.databinding.ActivityMainBinding
 import com.example.demoh264.utils.CodecUtils
 import com.example.demoh264.utils.H264Decode
+import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.security.Permission
@@ -35,28 +43,59 @@ class MainActivity : AppCompatActivity() {
 	// ffmpeg -i douyin.MP4  -c:v copy -bsf:v h264_mp4toannexb -an  douyin.h264
 	var byteeArray: ByteArray? = null
 //	var path = "/storage/emulated/0/DCIM/Video/RadagonOfTheGoldenOrder.mp4"
-	var path = "/storage/emulated/0/DCIM/Video/douyin.mp4"
+//	var path = "/storage/emulated/0/DCIM/Video/douyin.mp4"
+	var path = "douyin.h264"
 	private lateinit var surfaceHolder: SurfaceHolder
+	private lateinit var mediaProjectionManager:MediaProjectionManager
 
 	init {
 		val TAG = "H264"
-		byteeArray = FileInputStream(path).readBytes()
-		Log.i("vedio size", "${byteeArray?.size}")
+
+
 	}
 
 	private lateinit var binding: ActivityMainBinding
+	private lateinit var registerForActivityResult :ActivityResultLauncher<Intent>
+
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-
+		byteeArray = assets.open(path).readBytes()
+		Log.i("vedio size", "${byteeArray?.size}")
 		// Example of a call to a native method
 		binding.sampleText.text = stringFromJNI()
 		CodecUtils.getSupportCodeC()
 		checkPermission()
 		initSurface(720,1080)
+		mediaProjectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+		initLisener()
+	}
+
+	private fun initLisener() {
+		binding.startRecord.setOnClickListener{
+			startRecord()
+		}
+		binding.stopRecord.setOnClickListener{
+			stopRecord()
+		}
+		 registerForActivityResult =
+			registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+				if(it.resultCode == Activity.RESULT_OK){
+
+				}
+			}
+
+	}
+
+	fun startRecord(){
+
+
+	}
+
+	fun stopRecord(){
 
 	}
 
@@ -91,7 +130,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	fun play(view: View){
-		H264Decode(path,720,1080,surfaceHolder.surface).start()
+		H264Decode( assets.open(path).readBytes(),720,1080,surfaceHolder.surface).start()
 	}
 
 	private fun checkPermission() {
@@ -129,5 +168,7 @@ class MainActivity : AppCompatActivity() {
 			}
 		})
 	}
+
+
 
 }
