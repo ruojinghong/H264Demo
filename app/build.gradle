@@ -18,6 +18,8 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags '-std=c++11'
+				arguments '-DANDROID_TOOLCHAIN=clang'
+				// explicitly build libs
             }
         }
     }
@@ -27,6 +29,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+		/*
+        * debug build: the only build that allows Charles to intercept app traffic.
+        * */
+		debug {
+			debuggable true
+			versionNameSuffix ""
+			buildConfigField("String", "VERSION_NAME_SUFFIX", "\"\"")
+		}
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

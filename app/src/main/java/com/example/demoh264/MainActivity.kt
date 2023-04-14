@@ -2,37 +2,34 @@ package com.example.demoh264
 
 import android.Manifest
 import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.SurfaceTexture
-import android.media.MediaCodec
-import android.media.MediaCodecInfo
-import android.media.MediaFormat
+import android.graphics.BitmapFactory
 import android.media.projection.MediaProjectionManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build.VERSION
 import android.os.Bundle
-import android.os.FileUtils
 import android.util.Log
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceHolder.Callback
-import android.view.TextureView.SurfaceTextureListener
 import android.view.View
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityOptionsCompat
+import androidx.appcompat.app.AppCompatActivity
 import com.example.demoh264.databinding.ActivityMainBinding
+import com.example.demoh264.service.CaptureScreenService
 import com.example.demoh264.utils.CodecUtils
 import com.example.demoh264.utils.H264Decode
+import com.example.demoh264.utils.H264Encode
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
-import java.security.Permission
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
 	private lateinit var registerForActivityResult :ActivityResultLauncher<Intent>
-
+	private var encodeThread:H264Encode? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -84,19 +81,30 @@ class MainActivity : AppCompatActivity() {
 		 registerForActivityResult =
 			registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 				if(it.resultCode == Activity.RESULT_OK){
-
+					val mediaProject = mediaProjectionManager.getMediaProjection(it.resultCode,it.data!!)
+					val path= getExternalFilesDir(null)?.path+"/screen.h264"
+					encodeThread = H264Encode(mediaProject,path!!)
+					encodeThread?.startEncode()
 				}
 			}
 
 	}
 
+	@RequiresApi(Build.VERSION_CODES.O)
 	fun startRecord(){
-
+		startForegroundService(Intent(this,CaptureScreenService::class.java))
+		registerForActivityResult.launch(mediaProjectionManager.createScreenCaptureIntent())
 
 	}
 
-	fun stopRecord(){
 
+	fun stopRecord(){
+			encodeThread?.stopEncode()
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		encodeThread?.stopEncode()
 	}
 
 	override fun onRequestPermissionsResult(
@@ -130,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	fun play(view: View){
-		H264Decode( assets.open(path).readBytes(),720,1080,surfaceHolder.surface).start()
+		H264Decode( FileInputStream(File(getExternalFilesDir(null)?.path+"/screen.h264")).readBytes(),720,1080,surfaceHolder.surface).start()
 	}
 
 	private fun checkPermission() {
@@ -141,7 +149,7 @@ class MainActivity : AppCompatActivity() {
 		) {
 			val permissions = arrayOf(
 				Manifest.permission.READ_EXTERNAL_STORAGE,
-				Manifest.permission.WRITE_EXTERNAL_STORAGE
+				Manifest.permission.WRITE_EXTERNAL_STORAGE,
 			)
 			requestPermissions(permissions, 1)
 		}
