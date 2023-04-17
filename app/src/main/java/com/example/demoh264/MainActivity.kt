@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 		byteeArray = assets.open(path).readBytes()
 		Log.i("vedio size", "${byteeArray?.size}")
 		// Example of a call to a native method
-		binding.sampleText.text = stringFromJNI()
+//		binding.sampleText.text = stringFromJNI()
 		CodecUtils.getSupportCodeC()
 		checkPermission()
 		initSurface(720,1080)
@@ -118,9 +118,9 @@ class MainActivity : AppCompatActivity() {
 
 	companion object {
 		// Used to load the 'demoh264' library on application startup.
-		init {
-			System.loadLibrary("demoh264")
-		}
+//		init {
+//			System.loadLibrary("demoh264")
+//		}
 	}
 
 
