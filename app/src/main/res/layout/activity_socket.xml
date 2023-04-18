@@ -10,6 +10,7 @@
 		android:layout_height="match_parent"
 		android:id="@+id/remoteSurfaceView"/>
 	<SurfaceView
+		android:id="@+id/localSurfaceView"
 		android:layout_width="100dp"
 		android:layout_height="150dp"
 		app:layout_constraintRight_toRightOf="parent"
