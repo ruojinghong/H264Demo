@@ -88,6 +88,10 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 
+		binding.goToSocket.setOnClickListener{
+			startActivity(Intent(this,SocketActivity::class.java))
+		}
+
 	}
 
 	@RequiresApi(Build.VERSION_CODES.O)
