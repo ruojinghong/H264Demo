@@ -59,10 +59,7 @@ class LiveWebSocketServer:BaseWebSocket() {
 
 	override fun start() {
 		webSocketServer.start()
-<<<<<<< HEAD
 		//c0 c1 c2
-=======
->>>>>>> parent of b4ca3cb (c0)
 	}
 
 	override fun release() {
