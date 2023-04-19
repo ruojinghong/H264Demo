@@ -13,7 +13,7 @@ class LiveWebSocketServer:BaseWebSocket() {
 
 	companion object {
 		private const val TAG = "LiveWebSocketServer"
-		private const val PORT = 9527
+		private const val PORT = 30001
 	}
 
 	private var webSocket:WebSocket? = null
@@ -43,7 +43,7 @@ class LiveWebSocketServer:BaseWebSocket() {
 			}
 		}
 
-		override fun onError(conn: WebSocket, ex: Exception) {
+		override fun onError(conn: WebSocket?, ex: Exception) {
 			Log.d(TAG, "onError ", ex)
 		}
 

@@ -34,10 +34,10 @@ class H265Encode {
         try {
             //H265编码器 video/hevc
             mediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_VIDEO_HEVC)
-            val mediaFormat  = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC,width,height)
-            mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE,30)
-            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE,30 * width * height)
-            mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL,2)
+            val mediaFormat  = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC,height,width)
+			mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE,15)
+			mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE,800_000)
+			mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL,2)
             mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT,MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Flexible)
             mediaCodec.configure(mediaFormat,null,null,MediaCodec.CONFIGURE_FLAG_ENCODE)
             mediaCodec.start()
@@ -50,11 +50,11 @@ class H265Encode {
     }
 
     fun encodeFrame(nv21:ByteArray){
-        nv12 = nv21.nv21ToNv12(nv21)
+        nv12 = YUVUtils.nv21toNv12(nv21)
         //数据旋转90度
         YUVUtils.dataTo90(nv12!!,yuv!!,previewWidth,previewHeight)
         //开始编码
-        val inputBufferIndex = mediaCodec.dequeueInputBuffer(10_000)
+        val inputBufferIndex = mediaCodec.dequeueInputBuffer(10_1000)
         if(inputBufferIndex >= 0){
             val byteBuffer = mediaCodec.getInputBuffer(inputBufferIndex)
             byteBuffer?.clear()
@@ -71,6 +71,8 @@ class H265Encode {
         while (outputBufferIndex >= 0){
             val byteBuffer = mediaCodec.getOutputBuffer(outputBufferIndex)
             dealFrame(byteBuffer!!)
+			mediaCodec?.releaseOutputBuffer(outputBufferIndex, false)
+			outputBufferIndex = mediaCodec!!.dequeueOutputBuffer(info, 0)
         }
     }
 

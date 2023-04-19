@@ -24,10 +24,26 @@ class SocketActivity : AppCompatActivity() {
         mViewBinding.localSurfaceView.setZOrderOnTop(true)
         // 简单处理下权限
         requestPermission()
+
+		liveManager = LiveManager(mViewBinding.localSurfaceView.holder,mViewBinding.remoteSurfaceView.holder)
+
+		liveManager.init(540,960)
+
+		initListener()
     }
 
+	private fun initListener() {
+		mViewBinding.idStart.setOnClickListener {
+			liveManager.start(mViewBinding.checkbox.isChecked)
+		}
+		mViewBinding.idStop.setOnClickListener {
+			liveManager.stop()
+		}
+	}
 
-    fun requestPermission(): Boolean {
+
+
+	fun requestPermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
                 Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED

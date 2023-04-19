@@ -25,7 +25,7 @@ class CameraHelper(
 		val parameters: Camera.Parameters = camera.parameters
 		//摄像头默认NV21
 		Log.d(TAG, "previewFormat: ${parameters.previewFormat}")
-		setpreviewSize(parameters)
+		setPreviewSize(parameters)
 		camera.parameters = parameters
 		camera.setPreviewDisplay(holder)
 		// 由于硬件安装是横着的，如果是后置摄像头&&正常竖屏的情况下需要旋转90度
@@ -40,7 +40,7 @@ class CameraHelper(
 		previewListener?.onPreviewSize(width, height)
 	}
 
-	private fun setpreviewSize(parameters: Camera.Parameters) {
+	private fun setPreviewSize(parameters: Camera.Parameters) {
 		val supportedPreviewSizes = parameters.supportedPreviewSizes
 		var size = supportedPreviewSizes[0]
 		Log.d(TAG, "支持 ${size.width}x${size.height}")
