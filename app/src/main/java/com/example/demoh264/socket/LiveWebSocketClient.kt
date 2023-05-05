@@ -14,7 +14,7 @@ class LiveWebSocketClient : BaseWebSocket() {
 		private const val TAG = "LiveWebSocketClient"
 		private const val PORT = 30001
 
-		private const val URL = "ws://172.16.103.131:$PORT"
+		private const val URL = "ws://172.16.100.69:$PORT"
 	}
 
 	private var myWebSocketClient:MyWebSocketClient? = null
