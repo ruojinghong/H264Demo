@@ -95,7 +95,8 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
 			while (mIsRunning) {
 				if (mState != DecodeState.START &&
 					mState != DecodeState.DECODING &&
-					mState != DecodeState.SEEKING) {
+					mState != DecodeState.SEEKING
+				) {
 					Log.i(TAG, "进入等待：$mState")
 
 					waitDecode()
@@ -106,7 +107,8 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
 				}
 
 				if (!mIsRunning ||
-					mState == DecodeState.STOP) {
+					mState == DecodeState.STOP
+				) {
 					mIsRunning = false
 					break
 				}
@@ -215,25 +217,20 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
 	abstract fun initRender(): Boolean
 
 	private fun initCodec(): Boolean {
-		return try {
-			//根据音视频编码格式初始化编码器
+		try {
 			val type = mExtractor!!.getFormat()!!.getString(MediaFormat.KEY_MIME)
-			mCodec = MediaCodec.createByCodecName(type!!)
-			//配置编码器
-			if (configCodec(mCodec!!, mExtractor!!.getFormat()!!)) {
+			mCodec = MediaCodec.createDecoderByType(type!!)
+			if (!configCodec(mCodec!!, mExtractor!!.getFormat()!!)) {
 				waitDecode()
 			}
-			//解码器 启动
 			mCodec!!.start()
 
-			//获取解码器输入输出流
-			mInputBuffers = mCodec!!.inputBuffers
-			mOutputBuffers = mCodec!!.outputBuffers
-			true
+			mInputBuffers = mCodec?.inputBuffers
+			mOutputBuffers = mCodec?.outputBuffers
 		} catch (e: Exception) {
-			false
+			return false
 		}
-
+		return true
 	}
 
 	abstract fun configCodec(mediaCodec: MediaCodec, format: MediaFormat): Boolean
