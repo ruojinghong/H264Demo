@@ -91,6 +91,9 @@ class MainActivity : AppCompatActivity() {
 		binding.goToSocket.setOnClickListener{
 			startActivity(Intent(this,SocketActivity::class.java))
 		}
+		binding.goToNewDecoder.setOnClickListener {
+			startActivity(Intent(this,DecoderActivity::class.java))
+		}
 
 	}
 

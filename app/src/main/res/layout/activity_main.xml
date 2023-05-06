@@ -54,4 +54,14 @@
 		app:layout_constraintBottom_toTopOf="@id/stopRecord"
 		android:layout_marginBottom="20dp"
 		android:layout_marginRight="20dp"/>
+
+	<Button
+		android:id="@+id/go_to_new_decoder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="264dp"
+		android:layout_marginBottom="32dp"
+		android:text="socket --->"
+		app:layout_constraintBottom_toTopOf="@id/stopRecord"
+		app:layout_constraintRight_toRightOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
