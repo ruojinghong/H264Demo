@@ -4,6 +4,7 @@ import android.media.MediaRecorder.VideoEncoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import com.example.demoh264.camera.muxer.MP4Repack
 import com.example.demoh264.databinding.ActivityDecoderBinding
 import com.example.demoh264.media.decoder.AudioDecoder
 import com.example.demoh264.media.decoder.VideoDecoder
@@ -34,6 +35,8 @@ class DecoderActivity : AppCompatActivity() {
 
 		videoDecoder.goOn()
 		audioDecoder.goOn()
+
+		MP4Repack(path).start()
 
 
 	}
