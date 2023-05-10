@@ -414,4 +414,9 @@ abstract class BaseDecoder(private val mFilePath: String) : IDecoder {
 		mSyncRender = false
 		return this
 	}
+
+	inline fun <reified T> getT():T{
+
+		return T::class.java.newInstance()
+	}
 }

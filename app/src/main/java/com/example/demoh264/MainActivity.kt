@@ -94,6 +94,9 @@ class MainActivity : AppCompatActivity() {
 		binding.goToNewDecoder.setOnClickListener {
 			startActivity(Intent(this,DecoderActivity::class.java))
 		}
+		binding.goToNewOpengl.setOnClickListener {
+			startActivity(Intent(this,SimpleRenderActivity::class.java))
+		}
 
 	}
 
